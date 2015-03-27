@@ -29,8 +29,27 @@ public class ExpressionParser
 
     }
 
+    public static String eval_parentheses(String exp)
+    {
+    }
+
+    public static String eval_exp(String exp)
+    {
+        //
+    }
+
+    public static String eval_mult(String exp)
+    {
+    }
+
+    public static String eval_add(String exp)
+    {
+    }
+
+
     public static String smallest_exp(String exp)
     {
     }
+
 
 }
