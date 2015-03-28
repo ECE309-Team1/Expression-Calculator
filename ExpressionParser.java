@@ -6,12 +6,17 @@ public class ExpressionParser
 
     public static void main(String[] args)
     {
-        String exp = " abc";
-        StringBuilder sb = new StringBuilder(exp);
-
-               
-        String r = remove_spaces("a b c d");
-        System.out.println(r);  
+        String str1 = "1+e";
+        String str2 ="";
+        
+        try {
+	        str2 = replace_consts(str1);
+        } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
+        
+        System.out.println("to: "+  str2);
 
     }
 
@@ -55,6 +60,10 @@ public class ExpressionParser
                    {
                        sb.deleteCharAt(i);
                    }
+                else
+                {
+                	throw new IllegalArgumentException("Invalid spaces in statement");
+                }
             }
         }
        
@@ -66,8 +75,7 @@ public class ExpressionParser
         //
         String new_exp = exp.replace("e", Double.toString(Math.E));
 
-        new_exp = new_exp.replace("pi", Double.toString(Math.PI));
-
+        
         //If contains, x, take input
         if(new_exp.contains("x")){
             BufferedReader br = new BufferedReader(
@@ -82,7 +90,7 @@ public class ExpressionParser
             }
         }
         
-        return "";
+        return new_exp;
     }
 
     public static String eval_parentheses(String exp)
