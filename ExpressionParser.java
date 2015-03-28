@@ -74,8 +74,11 @@ public class ExpressionParser
     {
         //
         String new_exp = exp.replace("e", Double.toString(Math.E));
-
         
+        new_exp = new_exp.replace("pi", Double.toString(Math.PI));
+        
+        new_exp = new_exp.replace("PI", Double.toString(Math.PI));
+
         //If contains, x, take input
         if(new_exp.contains("x")){
             BufferedReader br = new BufferedReader(
