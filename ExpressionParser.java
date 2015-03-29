@@ -19,7 +19,6 @@ public class ExpressionParser
         }
         
         
-        System.out.println(str2);
 
     }
 
@@ -110,25 +109,22 @@ public class ExpressionParser
     	//insert spaces surrounding all ops.
     	for(int i=0; i < sb.length(); i++)
     	{
-    		if(sb.charAt(i) == '^'
-    		   || sb.charAt(i) == 'r'
-    		   || sb.charAt(i) == '*'
-    		   || sb.charAt(i) == '/'
-    		   || sb.charAt(i) == '+'
-    		   || sb.charAt(i) == '-')
+    		if(sb.charAt(i) == '^'    || sb.charAt(i) == 'r'
+    		   || sb.charAt(i) == '*' || sb.charAt(i) == '/'
+    		   || sb.charAt(i) == '+' || sb.charAt(i) == '-'
+    		   || sb.charAt(i) == '(' || sb.charAt(i) == ')')
     		{
     		    sb.insert(i, '\t');
     		    sb.insert(i+2, '\t');
     		    i ++;
 
-                System.out.println(sb.toString());
     		}
     	}
     	
     	return sb.toString();
     }
    
-    public static String[] get_token_array(String in)
+    public static String[] get_token_array(String in) throws IOException
     {
         /*
          * Recieve string with tab delim between all ops."
@@ -138,8 +134,12 @@ public class ExpressionParser
          * This is necessary to account for decimal inputs
          * items like PI.
          */
+        String a = remove_spaces(in);
+        String b = replace_consts(a);
+        String c = insert_delimiters(b);
         
-        return in.split("\\s+");
+        
+        return c.split("\\s+");
     }
     
     public static int findClosingParen(String[] tokens, int oPos)
@@ -185,7 +185,7 @@ public class ExpressionParser
         return cPos;
     }
     
-    public static String[] shunting_method(String exp)
+    public static String[] shunting_method(String exp) throws IOException
     {
         /*
          * Receives string with tab delimiters around operands.
@@ -198,62 +198,58 @@ public class ExpressionParser
         //STR array contains all numbers, and operators.
         String[] tokens = get_token_array(exp);
         
+        System.out.println("Sanitized input");
+        System.out.println(Arrays.toString(tokens));
         final String ops = "-+/*r^";
-        
-        String[] output_q = new String[tokens.length];
-        
+                
         int out_i = 0;
         
 
         StringBuilder sb = new StringBuilder();
+        String[] output_q = new String[tokens.length];
         Stack<String> op_stack = new Stack<String>();
         Stack<Integer> s = new Stack<>();
         
         
         for(String t: tokens)
         {
-            //"Token" may be more than a simple char, if it's 
-            //3.1415, etc
             char c = t.charAt(0);
-            int op_value = ops.indexOf(c);
             
-            if(Character.isDigit(c))
+            
+            
+            //If token is #, add to output quaeu
+            if(Character.isDigit(c) || 
+               (c == '-' && Character.isDigit(c)))
             {
-                sb.append(t);
+                output_q[out_i++] = t;
+                continue;
             }
-            /*
-             * Skip steps 3-4, not for this assignment.
-             * (no individual functions
-             */
+            
             
             //If the token is an operator, o1, then:
-            if(is_operator(c))
+            else if(ops.indexOf(c) != -1)
             {
-               while(!op_stack.isEmpty())
-               {
-                   int p2 = s.peek() / 2;
-                   int p1 = op_value/2;
-                   
-                   if ( p2 > p1 || (p2 == p1))
-                   {
-                       sb.append(ops.charAt(s.pop())).append(' ');
-                   }
-                   
-               }
+                //while there is an operator token, o2, 
+                //at the top of the operator stack
+                //o1 is prec-less than 
+                while(ops.indexOf(op_stack.peek().charAt(0)) != -1)   
+                {
+                    char o2 = op_stack.peek().charAt(0);
+                    
+                    //if op precedence
+                    if(!op_precedence(c, o2))
+                    {
+                        output_q[out_i++] = op_stack.pop();
+                    }
+                }
+                
             }
-            
-            
-            
-            //If the token is a left parenthesis, then push it onto the stack.
-            else if (c == '(')
+            else if(t.equals("("))
             {
                 op_stack.push(t);
             }
-            //If the token is a right parenthesis:
-            else if (c == ')')
+            else if(t.equals(")"))
             {
-                
-                
                 //If the stack runs out without finding a left parenthesis, 
                 //then there are mismatched parentheses.
                 try{
@@ -272,8 +268,8 @@ public class ExpressionParser
                 {
                     throw new IllegalArgumentException("Unmatched parens");
                 }
-                
             }
+            
             
         }
         //When there are no more tokens to read:
@@ -287,52 +283,34 @@ public class ExpressionParser
             {
                 throw new IllegalArgumentException("Mismatched parens");
             }
-            sb.append(t2);
+            output_q[out_i++] = t2;
         }
         
-        System.out.println("shunt str: " + sb.toString());
-        
+        //System.out.println("test: " + str_arr_to_str(output_q));
         
         return output_q;
     }
     
-    static String infixToPostfix(String infix) {
-        final String ops = "-+/*^";
-        StringBuilder sb = new StringBuilder();
-        Stack<Integer> s = new Stack<>();
- 
-        for (String token : infix.split("\\s")) {
-            char c = token.charAt(0);
-            int idx = ops.indexOf(c);
-            if (idx != -1 && token.length() == 1) {
-                if (s.isEmpty())
-                    s.push(idx);
-                else {
-                    while (!s.isEmpty()) {
-                        int prec2 = s.peek() / 2;
-                        int prec1 = idx / 2;
-                        if (prec2 > prec1 || (prec2 == prec1 && c != '^'))
-                            sb.append(ops.charAt(s.pop())).append(' ');
-                        else break;
-                    }
-                    s.push(idx);
-                }
-            } else if (c == '(') {
-                s.push(-2);
-            } else if (c == ')') {
-                while (s.peek() != -2)
-                    sb.append(ops.charAt(s.pop())).append(' ');
-                s.pop();
-            } else {
-                sb.append(token).append(' ');
-            }
-        }
-        while (!s.isEmpty())
-            sb.append(ops.charAt(s.pop())).append(' ');
-        return sb.toString();
+    static boolean op_precedence(char a, char b)
+    {
+        /*
+         * true when first arg has higher precedence.
+         * 
+         */
+        final String ops = "-+/*r^";
+        
+        //Dividing by two makes them have "equal" with pair.
+        //ie: - = 0, +=1, both are 0.
+        int p1 = ops.indexOf(a) / 2;
+        int p2 = ops.indexOf(b) / 2;
+        
+        
+        if  (p1 >= p2) return true;
+        else           return false;
+        
     }
-    
- 
+
+
     private static boolean is_operator(char c)
     {
         
@@ -344,7 +322,7 @@ public class ExpressionParser
     }
     
  
-   public String str_arr_to_str(String[] in)
+    public static String str_arr_to_str(String[] in)
     {
         String rslt = "";
         for (int i=0; i<in.length; i++)

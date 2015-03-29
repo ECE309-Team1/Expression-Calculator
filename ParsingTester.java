@@ -57,10 +57,12 @@ public class ParsingTester {
 	}
 	
 	@Test
-	public void test_shunting()
+	public void test_shunting() throws IOException
 	{
-	    ep.shunting_method(easy_str1);
-	    
+	   String infix = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
+	   
+	    String[] a = ep.shunting_method(infix);
+	    System.out.println("Ahmed: " + a);
 	}
 	
 	@Test
@@ -73,17 +75,8 @@ public class ParsingTester {
 	}
 	
 	
-	@Test
-	public void test_infix_to_postfic()
-	{        
-	    String infix = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
-    
-	}
 	
-	@Test
-	public void test_shunting_yard()
-	{
-	    String[] pf = ep.shunting_method("3+4*2/(1-5)^2^3");
-	}
+	
+	
 
 }
