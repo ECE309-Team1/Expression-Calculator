@@ -249,6 +249,36 @@ int totalWrong = 0;
 				
 			else if(expressionMode.isSelected() == true)
 			{
+				// 1) Get the current input, current total and send it for parsing
+				String total;
+				try
+				{
+					String input;
+					
+					// Simple tests for input - (To avoid unnecessary Double.parse exceptions) 
+					if(inputArea.getText().equals(""))
+						input = "0";
+					else
+						input = inputArea.getText();
+							
+					total = calculate(input);
+					
+					// Update the total after successful parsing
+					totalDisplay.setText(total);
+					errorLabelField.setText("");
+					
+					// Update the log by reading in the input and appending it to the log.
+					// NOTE-JJ - Append to log Display (not Total Display)
+					logDisplay.append(newLine + input + " = " + total + newLine);
+				    // scroll the outChatArea to the bottom
+				    logDisplay.setCaretPosition(logDisplay.getDocument().getLength());
+				}
+				
+				catch(IllegalArgumentException e)
+				{
+					// If parse not successful, Update error message.
+					errorLabelField.setText(e.toString());
+				}
 			}
 			
 			else if(testMode.isSelected() == true)
@@ -331,9 +361,18 @@ int totalWrong = 0;
 	}
 
 	@Override
-	public String calculate(String exp, String ans)
+	public String calculate(String exp)
 			throws IllegalArgumentException {
-		return null;
+		Double ans = null;
+		try
+		{
+			ans = ExpressionParser.parse_expression(exp);
+		}
+		catch(Exception e)
+		{
+			throw new IllegalArgumentException(e.getMessage());
+		}
+		return ans.toString();
 	}
 	
 	// Yet to be tested.
@@ -375,8 +414,6 @@ int totalWrong = 0;
 			double percentWrong = totalWrong / (totalRight + totalWrong);
 			logDisplay.append(newLine + "You have " + totalWrong + " incorrect tests. You have been incorrect " +
 					percentWrong + "% of the time.");
-		}	
-			
-			
+		}				
 	}
 }
