@@ -140,19 +140,19 @@ JPanel bottomPanel = new JPanel();
 		}
 		if (ae.getSource() == accumulatorMode )
 		{
-			
+			System.out.println("Accumulator Mode was Selected");
 		}
 		if (ae.getSource() == expressionMode )
 		{
-			
+			System.out.println("Expression Mode was Selected");
 		}
 		if (ae.getSource() == testMode )
 		{
-			
+			System.out.println("Test Mode was Selected");
 		}
 		if (ae.getSource() == graphMode )
 		{
-			
+			System.out.println("Graph Mode was Selected");
 		}
 	}
 
