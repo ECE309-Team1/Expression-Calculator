@@ -25,7 +25,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class ExpressionCalculator implements ActionListener, Calculator {
+public class ExpressionCalculator implements ActionListener {
 
 	// GUI declarations
 JFrame calcWindow = new JFrame();	
