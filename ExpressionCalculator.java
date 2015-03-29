@@ -129,21 +129,7 @@ JPanel bottomPanel = new JPanel();
 	@Override
 	public void actionPerformed(ActionEvent ae)
 	{
-		// clear the label field
-				/*errorLabelField.setText("");
-				
-				// clear button implementation
-				if (ae.getSource == clearButton)
-				{
-					inputArea.setText("");
-					totalDisplay.setText("");
-					errorLabelField.setText("");
-				}
-				
-				else
-				{
-					// Don't know how to detect enter key yet. Will add soon
-				} */
+		
 	}
 
 	
