@@ -56,6 +56,8 @@ JPanel centerPanel = new JPanel();
 JPanel bottomPanel = new JPanel();
 String newLine = System.lineSeparator();
 boolean debug;
+int totalRight = 0;
+int totalWrong = 0;
 	
 	public static void main(String[] args) 
 	{
@@ -251,7 +253,7 @@ boolean debug;
 			
 			else if(testMode.isSelected() == true)
 			{
-				
+				learningMode(inputArea.getText());
 			}
 			
 			else if(graphMode.isSelected() == true)
@@ -332,5 +334,49 @@ boolean debug;
 	public String calculate(String exp, String ans)
 			throws IllegalArgumentException {
 		return null;
+	}
+	
+	// Yet to be tested.
+	public void learningMode(String exp)
+	{
+		String leftExp = null;
+		String rightExp = null;
+		double leftVal = -2;
+		double rightVal = -1;
+		
+		for (int i = 0; i < exp.length(); i++) 
+		{
+			if (exp.charAt(i) == '=')
+			{
+				leftExp = exp.substring(0, i).trim();
+				rightExp = exp.substring(i+1).trim();
+			}
+		}
+		if (leftExp == null || rightExp == null)
+			throw new IllegalArgumentException("Please include an = sign");
+
+		// to be tested once expression parser is working.
+		//leftVal = ExpressionParser.parseExpression(leftExp); // run leftExp through ExpressionParser(?) and get return value leftVal
+		//rightVal = ExpressionParser.parseExpression(rightExp); // run rightExp through ExpressionParser(?) and get return value rightVal
+		
+		if (leftVal == rightVal)
+		{	
+			totalDisplay.setText("Correct!");
+			totalRight++;
+			double percentRight = totalRight / (totalRight + totalWrong);
+			logDisplay.append(newLine + "You have " + totalRight + " correct tests. You have been correct " +
+								percentRight + "% of the time."); 
+			
+		}
+		else
+		{
+			totalDisplay.setText("Oops!");
+			totalWrong++;
+			double percentWrong = totalWrong / (totalRight + totalWrong);
+			logDisplay.append(newLine + "You have " + totalWrong + " incorrect tests. You have been incorrect " +
+					percentWrong + "% of the time.");
+		}	
+			
+			
 	}
 }
