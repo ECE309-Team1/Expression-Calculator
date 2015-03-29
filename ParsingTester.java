@@ -62,6 +62,23 @@ public class ParsingTester {
 	    
 	}
 	
+	@Test
+	public void test_parens()
+	{
+	    String[] tokens = {"(", "5", "*",
+	                       "(", ")", ")"};
+	    int cPos = ep.findClosingParen(tokens,0);
+	    assertEquals(cPos,5);
+	}
+	
+	
+	@Test
+	public void test_infix_to_postfic()
+	{        
+	    String infix = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
+	    System.out.println("postfix: " + ep.infixToPostfix(infix));
+	    
+	}
 	
 
 }
