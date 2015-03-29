@@ -1,59 +1,60 @@
 import java.io.*;  
 class Stack  
 {  
-   private int[] a;  
+   private double[] a;  
    private int top,m;  
    public Stack(int max)  
    {  
      m=max;  
-     a=new int[m];  
+     a=new double[m];  
      top=-1;  
    }  
-   public void push(int key)  
+   public void push(double key)  
    {  
      a[++top]=key;  
    }  
-   public int pop()  
+   public double pop()  
    {  
      return(a[top--]);  
    }  
 }  
 class Evaluation{  
-   public int calculate(String s)  
+   public double calculate(String s)  
    {  
-     int n,r=0;  
-     n=s.length();  
-     Stack a=new Stack(n);  
-     for(int i=0;i<n;i++)  
+	 int stringLength;
+     double  result=0;  
+     stringLength=s.length();  
+     Stack a= new Stack(stringLength);  
+     for(int i=0;i<stringLength;i++)  
      {  
        char ch=s.charAt(i);  
        if(ch>='0'&&ch<='9')  
          a.push((int)(ch-'0'));  
        else  
        {  
-         int x=a.pop();  
-         int y=a.pop();  
+         double x=a.pop();  
+         double y=a.pop();  
          switch(ch)  
          {  
-           case '+':r=x+y;  
+           case '+':result=x+y;  
               break;  
-           case '-':r=y-x;  
+           case '-':result=y-x;  
               break;  
-           case '*':r=x*y;  
+           case '*':result=x*y;  
               break;  
-           case '/':r=y/x;  
+           case '/':result=y/x;  
               break;  
-           case 'r':r= (int) Math.pow(x,1/y);
+           case 'r':result= Math.pow(x,1/y);
         	   break;
-           case '^':r=(int) Math.pow(x, y);
+           case '^':result= Math.pow(x, y);
            	  break;
-           default:r=0;  
+           default:result=0;  
          }  
-         a.push(r);  
+         a.push(result);  
        }  
      }  
-     r=a.pop();  
-     return(r);  
+     result=a.pop();  
+     return(result);  
    }  
 }  
 class PostfixEvaluation  
