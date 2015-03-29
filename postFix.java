@@ -21,19 +21,19 @@ public class postFix{
 	   }  
 	}
  
-	   public static void main(String[] args)throws IOException  
+	   /*public static void main(String[] args)throws IOException  
 	   {  
 	     //String[] input = {"4","2","+","3","5","1","-","*","+"};  
 		   String[] input = {"-27","3","r"}; 
-	       /*System.out.println("Enter the postfix expresion");  
-	       input=getString();  
-	       if(input.equals(""))  
-	         break;  */ 
+	       //System.out.println("Enter the postfix expresion");  
+	       //input=getString();  
+	       //if(input.equals(""))  
+	       //  break;  
 	       postFix e=new postFix(); 
 	       System.out.println("Result: "+e.calculate(input));  
 	     
 	     
-	}
+	}*/
    public double calculate(String[] s)  
    {  
 	 int stringLength;
