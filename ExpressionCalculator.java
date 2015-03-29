@@ -129,7 +129,6 @@ JPanel bottomPanel = new JPanel();
 	@Override
 	public void actionPerformed(ActionEvent ae)
 	{
-
 		errorLabelField.setText("");
 		
 		// clear button implementation
@@ -155,7 +154,6 @@ JPanel bottomPanel = new JPanel();
 		{
 			
 		}
-
 	}
 
 	
