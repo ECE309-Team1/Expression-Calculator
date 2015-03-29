@@ -207,25 +207,43 @@ public class ExpressionParser
 
         StringBuilder sb = new StringBuilder();
         Stack<String> op_stack = new Stack<String>();
+        Stack<Integer> s = new Stack<>();
         
         
-        System.out.println(Arrays.toString(tokens));
-        
-       
         for(String t: tokens)
         {
             //"Token" may be more than a simple char, if it's 
             //3.1415, etc
             char c = t.charAt(0);
+            int op_value = ops.indexOf(c);
             
             if(Character.isDigit(c))
             {
-                output_q[out_i++] = t;
+                sb.append(t);
             }
             /*
              * Skip steps 3-4, not for this assignment.
              * (no individual functions
              */
+            
+            //If the token is an operator, o1, then:
+            if(is_operator(c))
+            {
+               while(!op_stack.isEmpty())
+               {
+                   int p2 = s.peek() / 2;
+                   int p1 = op_value/2;
+                   
+                   if ( p2 > p1 || (p2 == p1))
+                   {
+                       sb.append(ops.charAt(s.pop())).append(' ');
+                   }
+                   
+               }
+            }
+            
+            
+            
             //If the token is a left parenthesis, then push it onto the stack.
             else if (c == '(')
             {
@@ -234,22 +252,45 @@ public class ExpressionParser
             //If the token is a right parenthesis:
             else if (c == ')')
             {
+                
+                
+                //If the stack runs out without finding a left parenthesis, 
+                //then there are mismatched parentheses.
+                try{
+                    
                 //Until the token at the top of the stack is a left parenthesis,
                 //pop operators off the stack onto the output queue.
                 while(!op_stack.peek().equals("("))
                 {
-                    output_q[out_i++] = op_stack.pop();
-                    
+                    sb.append(op_stack.pop());
                 }
                 //Pop the left parenthesis from the stack,
                 //but not onto the output queue.\
                 op_stack.pop();
-                
+                }
+                catch(Exception EmptyStackException)
+                {
+                    throw new IllegalArgumentException("Unmatched parens");
+                }
                 
             }
             
         }
+        //When there are no more tokens to read:
         
+        //While there are still operator tokens in the stack
+        while(! op_stack.isEmpty())
+        {
+            String t2 = op_stack.pop();
+            
+            if(t2.equals("(") || t2.equals(")"))
+            {
+                throw new IllegalArgumentException("Mismatched parens");
+            }
+            sb.append(t2);
+        }
+        
+        System.out.println("shunt str: " + sb.toString());
         
         
         return output_q;

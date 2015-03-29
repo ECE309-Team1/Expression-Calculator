@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -76,9 +77,13 @@ public class ParsingTester {
 	public void test_infix_to_postfic()
 	{        
 	    String infix = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
-	    System.out.println("postfix: " + ep.infixToPostfix(infix));
-	    
+    
 	}
 	
+	@Test
+	public void test_shunting_yard()
+	{
+	    String[] pf = ep.shunting_method("3+4*2/(1-5)^2^3");
+	}
 
 }
