@@ -128,6 +128,49 @@ public class ExpressionParser
     	return sb.toString();
     }
     
+    public int findClosingParen(String[] tokens, int oPos)
+    {
+        /*
+         * Recieves String array of token.
+         * Recieves index of left paren
+         */
+        
+        if(tokens[oPos].equals(")"))
+        {
+            throw new IllegalArgumentException("Unmatches paren");
+        }
+        
+        
+        int cPos = oPos;
+        int i=1;
+        
+        while(i>0)
+        {
+            String s = tokens[++cPos];
+            
+            if(i>tokens.length || cPos > tokens.length)
+            {
+                throw new IllegalArgumentException("Unmatches paren");
+            }
+            
+            if(s.equals("("))
+            {
+                i++;
+            }
+            else if (s.equals(")"))
+            {
+                i--;
+            }
+        }
+        
+        if(tokens[cPos].equals(")"))
+        {
+            throw new IllegalArgumentException("Unmatches paren");
+        }
+        
+        return cPos;
+    }
+    
     public static double shunting_method(String exp)
     {
         /*
