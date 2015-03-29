@@ -1,4 +1,6 @@
 import java.lang.*;
+import java.util.Arrays;
+import java.util.Stack;
 import java.io.*;
 
 public class ExpressionParser
@@ -6,7 +8,7 @@ public class ExpressionParser
 
     public static void main(String[] args)
     {
-        String str1 = "1+e";
+        String str1 = "1+e+pi";
         String str2 ="";
         
         try {
@@ -16,7 +18,8 @@ public class ExpressionParser
 	        e.printStackTrace();
         }
         
-        System.out.println("to: "+  str2);
+        
+        System.out.println(str2);
 
     }
 
@@ -31,7 +34,6 @@ public class ExpressionParser
         //API to outside world. Returns evaluated outside value.
         return 0.0;
     }
-
     public static String remove_spaces(String exp)
     {
         //Returns expression without spaces/
@@ -55,8 +57,8 @@ public class ExpressionParser
             if(sb.charAt(i) == ' ')
             {
                 //Don't remove char if surroundings are both digits
-                if(!(Character.isDigit(sb.charAt(i)) 
-                   && Character.isDigit(sb.charAt(i))))
+                if(!(Character.isDigit(sb.charAt(i-1)) 
+                   && Character.isDigit(sb.charAt(i+1))))
                    {
                        sb.deleteCharAt(i);
                    }
@@ -96,6 +98,59 @@ public class ExpressionParser
         return new_exp;
     }
 
+    public static String insert_delimiters(String exp)
+    {
+    	/* Receives string with no spaces.
+    	 * inserts tab characters in between
+    	 * Tab characters because it's unlikely as natural input.
+    	 */
+    	
+    	StringBuilder sb = new StringBuilder(exp);
+    	
+    	//insert spaces surrounding all ops.
+    	for(int i=0; i < sb.length(); i++)
+    	{
+    		if(sb.charAt(i) == '^'
+    		   || sb.charAt(i) == 'r'
+    		   || sb.charAt(i) == '*'
+    		   || sb.charAt(i) == '/'
+    		   || sb.charAt(i) == '+'
+    		   || sb.charAt(i) == '-')
+    		{
+    		    sb.insert(i, '\t');
+    		    sb.insert(i+2, '\t');
+    		    i ++;
+
+                System.out.println(sb.toString());
+    		}
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    public static double shunting_method(String exp)
+    {
+        /*
+         * Receives string with tab delimiters around operands.
+         * 
+         * 
+         * Returns evaluated statement.
+         */
+        
+        String[] output_queaue;
+        
+        Stack fnct_stack = new Stack();
+        
+        
+        //Seperate into tokens along delimeters.
+        //STR array contains all numbers, and operators.
+        String[] tokens = exp.split("\\s+");
+        
+        return 0;
+    }
+    
+    
+    
     public static String eval_parentheses(String exp)
     {
         return "";
