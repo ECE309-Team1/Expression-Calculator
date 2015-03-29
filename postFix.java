@@ -3,21 +3,21 @@ import java.io.*;
 public class postFix{  
 	public class Stack  
 	{  
-	   private double[] a;  
+	   private double[] stack;  
 	   private int top,m;  
 	   public Stack(int max)  
 	   {  
 	     m=max;  
-	     a=new double[m];  
+	     stack=new double[m];  
 	     top=-1;  
 	   }  
 	   public void push(double key)  
 	   {  
-	     a[++top]=key;  
+	     stack[++top]=key;  
 	   }  
 	   public double pop()  
 	   {  
-	     return(a[top--]);  
+	     return(stack[top--]);  
 	   }  
 	}
  
