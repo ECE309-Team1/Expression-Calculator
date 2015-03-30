@@ -204,22 +204,18 @@ public class ExpressionParser
                 
         int out_i = 0;
         
-
-        StringBuilder sb = new StringBuilder();
         String[] output_q = new String[tokens.length];
         Stack<String> op_stack = new Stack<String>();
-        Stack<Integer> s = new Stack<>();
-        
         
         for(String t: tokens)
         {
+            System.out.println("Current token: " + t);
             char c = t.charAt(0);
             
             
             
             //If token is #, add to output quaeu
-            if(Character.isDigit(c) || 
-               (c == '-' && Character.isDigit(c)))
+            if(Character.isDigit(c))
             {
                 output_q[out_i++] = t;
                 continue;
@@ -232,20 +228,33 @@ public class ExpressionParser
                 //while there is an operator token, o2, 
                 //at the top of the operator stack
                 //o1 is prec-less than 
-                while(ops.indexOf(op_stack.peek().charAt(0)) != -1)   
+                
+               
+               // while(ops.indexOf(op_stack.peek().charAt(0)) != -1)   
+                while(! op_stack.isEmpty())
                 {
-                    char o2 = op_stack.peek().charAt(0);
+                   System.out.println("loop: " + t);
+                  //while there is op token at top of stack.
+                  char o2 = op_stack.peek().charAt(0);
+                  //if o1 is operator & o2 is higher prec.
+                  if(ops.indexOf(o2) >= 0 && op_precedence(o2,c)) //check for op.
+                  {
+                      //pop o2 onto 
+                      output_q[out_i++] = op_stack.pop();
+                      //break;
+                  } else{                      
+                      break;
+                  }
+                  
                     
-                    //if op precedence
-                    if(!op_precedence(c, o2))
-                    {
-                        output_q[out_i++] = op_stack.pop();
-                    }
                 }
+                System.out.println("Pushing to stack: " + t);
+                op_stack.push(t);
                 
             }
             else if(t.equals("("))
             {
+                System.out.println("Pushing: " + t);
                 op_stack.push(t);
             }
             else if(t.equals(")"))
@@ -258,11 +267,11 @@ public class ExpressionParser
                 //pop operators off the stack onto the output queue.
                 while(!op_stack.peek().equals("("))
                 {
-                    sb.append(op_stack.pop());
+                    output_q[out_i++] = op_stack.pop();
                 }
                 //Pop the left parenthesis from the stack,
                 //but not onto the output queue.\
-                op_stack.pop();
+                System.out.println(" Popped but not added: " + op_stack.pop());
                 }
                 catch(Exception EmptyStackException)
                 {
@@ -273,20 +282,21 @@ public class ExpressionParser
             
         }
         //When there are no more tokens to read:
+        String t2 = op_stack.pop();
+        if(t2.equals("(") || t2.equals(")"))
+        {
+            throw new IllegalArgumentException("Mismatched parens");
+        }
         
         //While there are still operator tokens in the stack
         while(! op_stack.isEmpty())
         {
-            String t2 = op_stack.pop();
-            
-            if(t2.equals("(") || t2.equals(")"))
-            {
-                throw new IllegalArgumentException("Mismatched parens");
-            }
-            output_q[out_i++] = t2;
+            System.out.println("Popping extra off stack: "
+                    + op_stack.peek());
+            output_q[out_i++] = op_stack.pop();
         }
         
-        //System.out.println("test: " + str_arr_to_str(output_q));
+        System.out.println("test: " + str_arr_to_str(output_q));
         
         return output_q;
     }
@@ -303,6 +313,7 @@ public class ExpressionParser
         //ie: - = 0, +=1, both are 0.
         int p1 = ops.indexOf(a) / 2;
         int p2 = ops.indexOf(b) / 2;
+        
         
         
         if  (p1 >= p2) return true;

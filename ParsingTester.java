@@ -57,12 +57,24 @@ public class ParsingTester {
 	}
 	
 	@Test
+	public void test_precedence()
+	{
+	    boolean a_true = ep.op_precedence('*', '+');
+	    boolean a_false = ep.op_precedence('-', '/');
+	    
+	    	    
+	    assertTrue(a_true);
+	    assertFalse(a_false);
+	    
+	}
+	
+	@Test
 	public void test_shunting() throws IOException
 	{
 	   String infix = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
 	   
 	    String[] a = ep.shunting_method(infix);
-	    System.out.println("Ahmed: " + a);
+	    System.out.println("Ahmed: " + Arrays.toString(a));
 	}
 	
 	@Test
