@@ -10,7 +10,7 @@ public class ExpressionParser
         StringBuilder sb = new StringBuilder(exp);
 
                
-        Double r = parse_expression("(3-1)*4/2^2", "3");
+        Double r = parse_expression("((3^6^2)^(2/(pi^e)))+x^(x+2)-300r5", "5");
         System.out.println("ans = " + r);  
 
     }
@@ -116,6 +116,8 @@ public class ExpressionParser
 	    		toSend = exp.substring(n+1, m);
 	    		result = eval_exp(toSend);
 	    		exp = exp.replace(exp.substring(n, m+1), result);
+	    		exp = exp.replace("--", "+");
+	    		System.out.println("Expression: " + exp);
 			}
     	}
 		
@@ -171,6 +173,7 @@ public static String eval_exp(String exp)
 	    			double ans = Math.pow(Double.parseDouble(op1), 1/Double.parseDouble(op2));
 	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 				 
 				else
@@ -211,16 +214,11 @@ public static String eval_exp(String exp)
 	    			
 	    			double ans = Math.pow(Double.parseDouble(op1), Double.parseDouble(op2));
 	    			
-	    			System.out.println(exp.substring(ind1, b));
-	    			System.out.println(Double.toString(ans));
-	    			System.out.println(exp);
-	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 			}
 		}
-    	
-		System.out.println("ans after first precedence: " + exp);
 		
 		for(int i = 0; i < exp.length(); i++)
 		{
@@ -265,6 +263,7 @@ public static String eval_exp(String exp)
 	    			double ans = Double.parseDouble(op1) * Double.parseDouble(op2);
 	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 				 
 				else
@@ -305,16 +304,11 @@ public static String eval_exp(String exp)
 	    			
 	    			double ans = Double.parseDouble(op1) / Double.parseDouble(op2);
 	    			
-	    			System.out.println(exp.substring(ind1, b));
-	    			System.out.println(Double.toString(ans));
-	    			System.out.println(exp);
-	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 			}
 		}
-		
-		System.out.println("ans after second precedence: " + exp);
     	
 		for(int i = 0; i < exp.length(); i++)
 		{
@@ -359,6 +353,7 @@ public static String eval_exp(String exp)
 	    			double ans = Double.parseDouble(op1) + Double.parseDouble(op2);
 	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 				 
 				else
@@ -399,11 +394,8 @@ public static String eval_exp(String exp)
 	    			
 	    			double ans = Double.parseDouble(op1) - Double.parseDouble(op2);
 	    			
-	    			System.out.println(exp.substring(ind1, b));
-	    			System.out.println(Double.toString(ans));
-	    			System.out.println(exp);
-	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			i = 0;
 				}
 			}
 		}
