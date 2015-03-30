@@ -105,11 +105,22 @@ public class ExpressionParser
     	int m =  exp.length();
     	String toSend = "";
     	String result = "";
+
+		int openPar = exp.length() - exp.replace(")", "").length();
+    	int closePar = exp.length() - exp.replace("(", "").length();
     	
     	if(exp.contains("(") && exp.contains(")"))
     	{
 			while(exp.contains("(") && exp.contains(")"))
 			{
+				if(exp.contains(")("))
+				{
+					throw new IllegalArgumentException("Error. No explicit multiplication or parantheses not in right order");
+				}
+				if(!(openPar == closePar))
+				{
+					throw new IllegalArgumentException("Parantheses do not match.");
+				}
 				m = exp.indexOf(')');
 	    		n = exp.substring(0,m).lastIndexOf('(');
 	    		

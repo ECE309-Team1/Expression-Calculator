@@ -411,7 +411,7 @@ int totalWrong = 0;
 		{
 			totalDisplay.setText("Oops!");
 			totalWrong++;
-			double percentWrong = (totalWrong*100) / (totalRight + totalWrong);
+			double percentWrong = (totalWrong*100)	 / (totalRight + totalWrong);
 			logDisplay.append(newLine + "You have " + totalWrong + " incorrect tests. You have been incorrect " +
 					percentWrong + "% of the time.");
 		}				
