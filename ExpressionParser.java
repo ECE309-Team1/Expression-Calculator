@@ -48,8 +48,10 @@ public class ExpressionParser
         //Returns expression without spaces/
        
         StringBuilder sb = new StringBuilder(exp);
+        //Check for invalid values.
         
-         
+  
+        
         //remove spaces at corners without concern for surroundings.
         if(sb.charAt(0) == ' ')
         {
@@ -59,10 +61,21 @@ public class ExpressionParser
         {
             sb.deleteCharAt(exp.length()-1);
         }
-
+        String acc = "-+*/r^x ";
+        
         //iterate through rest
         for(int i=1; i<sb.length()-1 ; i++)
         {
+            //check for invalid vals
+            char c = sb.charAt(i);
+            //must be digit or one of these vals.
+            if(acc.indexOf(c) == -1 && !Character.isDigit(c))
+            {
+                throw new IllegalArgumentException("Invalid characterdetected: " + c);
+                
+            }
+            
+            
             if(sb.charAt(i) == ' ')
             {
                 //Don't remove char if surroundings are both digits
@@ -73,6 +86,10 @@ public class ExpressionParser
                    }
             }
         }
+        
+        
+        
+        
        
         return sb.toString();          
     }
