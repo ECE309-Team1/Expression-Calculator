@@ -1,7 +1,7 @@
 import java.io.*;  
   
 public class postFix{  
-	public class Stack  
+	public static class Stack  
 	{  
 	   private double[] stack;  
 	   private int top,m;  
@@ -34,7 +34,7 @@ public class postFix{
 	     
 	     
 	}*/
-   public double calculate(String[] s)  
+   public static double calculate(String[] s)  
    {  
 	 int stringLength;
      double  result=0;  
