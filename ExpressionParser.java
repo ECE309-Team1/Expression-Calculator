@@ -50,9 +50,20 @@ public class ExpressionParser
             sb.deleteCharAt(exp.length()-1);
         }
 
+        String acceptable_chars = "-+*/r^x() ";
+ 
         //iterate through rest
         for(int i=1; i<sb.length()-1 ; i++)
         {
+            //check for invalid chars
+            
+            char c = sb.charAt(i);
+            if(acceptable_chars.indexOf(c) == -1){
+                throw new IllegalArgumentException("Invalid character found");
+            }
+            
+            
+            
             if(sb.charAt(i) == ' ')
             {
                 //Don't remove char if surroundings are both digits
