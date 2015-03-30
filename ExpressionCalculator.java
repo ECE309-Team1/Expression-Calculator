@@ -366,7 +366,7 @@ int totalWrong = 0;
 		Double ans = null;
 		try
 		{
-			ans = ExpressionParser.parse_expression(exp);
+			ans = ExpressionParser.parse_expression(exp, forX.getText());
 		}
 		catch(Exception e)
 		{
@@ -395,8 +395,8 @@ int totalWrong = 0;
 			throw new IllegalArgumentException("Please include an = sign");
 
 		// to be tested once expression parser is working.
-		//leftVal = ExpressionParser.parseExpression(leftExp); // run leftExp through ExpressionParser(?) and get return value leftVal
-		//rightVal = ExpressionParser.parseExpression(rightExp); // run rightExp through ExpressionParser(?) and get return value rightVal
+		leftVal = ExpressionParser.parse_expression(leftExp, forX.getText()); // run leftExp through ExpressionParser(?) and get return value leftVal
+		rightVal = ExpressionParser.parse_expression(rightExp, forX.getText()); // run rightExp through ExpressionParser(?) and get return value rightVal
 		
 		if (leftVal == rightVal)
 		{	
