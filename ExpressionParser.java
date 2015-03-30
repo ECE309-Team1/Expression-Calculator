@@ -10,8 +10,8 @@ public class ExpressionParser
         StringBuilder sb = new StringBuilder(exp);
 
                
-        String r = remove_spaces("a b c d");
-        System.out.println(r);  
+        Double r = parse_expression("(3-1)*4/2^2", "3");
+        System.out.println("ans = " + r);  
 
     }
 
@@ -20,12 +20,28 @@ public class ExpressionParser
         System.out.println("A");
     }
 
-
-    public static double parse_expression(String exp)
+    public static double parse_expression(String exp, String text) throws IllegalArgumentException 
     {
-        //API to outside world. Returns evaluated outside value.
-        return 0.0;
-    }
+		// TODO Auto-generated method stub
+//API to outside world. Returns evaluated outside value.
+    	
+    	// Remove spaces in the expression.
+    	exp = ExpressionParser.remove_spaces(exp);
+    	
+
+    	try
+    	{
+        	// replace constants with their values in the expression.
+    		exp = ExpressionParser.replace_consts(exp, text);
+    		exp = eval_parentheses(exp);
+    		
+    	}
+    	catch(Exception e)
+    	{
+    		throw new IllegalArgumentException(e.getMessage());
+    	}
+        return Double.parseDouble(exp);
+	}
 
     public static String remove_spaces(String exp)
     {
@@ -61,7 +77,7 @@ public class ExpressionParser
         return sb.toString();          
     }
 
-    public static String replace_consts(String exp) throws IOException
+    public static String replace_consts(String exp, String x)
     {
         //
         String new_exp = exp.replace("e", Double.toString(Math.E));
@@ -70,46 +86,329 @@ public class ExpressionParser
 
         //If contains, x, take input
         if(new_exp.contains("x")){
-            BufferedReader br = new BufferedReader(
-                                new InputStreamReader(System.in));
-            String x = br.readLine();
             try
             {
+            	new_exp = new_exp.replace("x", x);
             }
             catch(Exception NumberFormatException)
             {
-                System.out.println("Enterred value is not a number");
+                throw new IllegalArgumentException("Entered value is not a number");
             }
         }
         
-        return "";
+        return new_exp;
     }
 
     public static String eval_parentheses(String exp)
     {
-        return "";
+    	int n = 0;
+    	int m =  exp.length();
+    	String toSend = "";
+    	String result = "";
+    	
+    	if(exp.contains("(") && exp.contains(")"))
+    	{
+			while(exp.contains("(") && exp.contains(")"))
+			{
+				m = exp.indexOf(')');
+	    		n = exp.substring(0,m).lastIndexOf('(');
+	    		
+	    		toSend = exp.substring(n+1, m);
+	    		result = eval_exp(toSend);
+	    		exp = exp.replace(exp.substring(n, m+1), result);
+			}
+    	}
+		
+		toSend = exp.substring(0);
+		result = eval_exp(toSend);
+		exp = exp.replace(exp, result);
+        return exp;
     }
 
-    public static String eval_exp(String exp)
-    {
-        //
-        return "";
-    }
-
-    public static String eval_mult(String exp)
-    {
-        return "";
-    }
-
-    public static String eval_add(String exp)
-    {
-        return "";
-    }
-
-    public static String smallest_exp(String exp)
-    {
-        return "";
-    }
-
+public static String eval_exp(String exp)
+{
+    	
+		for(int i = 0; i < exp.length(); i++)
+		{
+			if(exp.charAt(i) == 'r' || exp.charAt(i) == '^')
+			{
+				if(exp.charAt(i) == 'r')
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('r');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '*' || exp.charAt(a) == '/' || exp.charAt(a) == '+' || exp.charAt(a) == '-' )
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '*' || exp.charAt(b) == '/' || exp.charAt(b) == '+' || exp.charAt(b) == '-' || exp.charAt(b) == '^' || exp.charAt(b) == 'r')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Math.pow(Double.parseDouble(op1), 1/Double.parseDouble(op2));
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+				 
+				else
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('^');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '*' || exp.charAt(a) == '/' || exp.charAt(a) == '+' || exp.charAt(a) == '-' )
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '*' || exp.charAt(b) == '/' || exp.charAt(b) == '+' || exp.charAt(b) == '-' || exp.charAt(b) == '^' || exp.charAt(b) == 'r')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Math.pow(Double.parseDouble(op1), Double.parseDouble(op2));
+	    			
+	    			System.out.println(exp.substring(ind1, b));
+	    			System.out.println(Double.toString(ans));
+	    			System.out.println(exp);
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+			}
+		}
+    	
+		System.out.println("ans after first precedence: " + exp);
+		
+		for(int i = 0; i < exp.length(); i++)
+		{
+			if(exp.charAt(i) == '*' || exp.charAt(i) == '/')
+			{
+				if(exp.charAt(i) == '*')
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('*');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '+' || exp.charAt(a) == '-' )
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '*' || exp.charAt(b) == '/' || exp.charAt(b) == '+' || exp.charAt(b) == '-')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Double.parseDouble(op1) * Double.parseDouble(op2);
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+				 
+				else
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('/');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '+' || exp.charAt(a) == '-' )
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '*' || exp.charAt(b) == '/' || exp.charAt(b) == '+' || exp.charAt(b) == '-' || exp.charAt(b) == '^' || exp.charAt(b) == 'r')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Double.parseDouble(op1) / Double.parseDouble(op2);
+	    			
+	    			System.out.println(exp.substring(ind1, b));
+	    			System.out.println(Double.toString(ans));
+	    			System.out.println(exp);
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+			}
+		}
+		
+		System.out.println("ans after second precedence: " + exp);
+    	
+		for(int i = 0; i < exp.length(); i++)
+		{
+			if(exp.charAt(i) == '+' || exp.charAt(i) == '-')
+			{
+				if(exp.charAt(i) == '+')
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('+');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '*' || exp.charAt(a) == '/')
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '+' || exp.charAt(b) == '-')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Double.parseDouble(op1) + Double.parseDouble(op2);
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+				 
+				else
+				{
+					int op_ind;
+			    	int ind1 = 0;
+			    	int ind2 = -1;
+			    	String op1;
+			    	String op2;
+			    	int a = 0;
+			    	int b = exp.length();
+			    	
+					op_ind = exp.indexOf('-');
+					for(a = op_ind; a>=0; a--)
+	    			{
+	    				if(exp.charAt(a) == '*' || exp.charAt(a) == '/')
+	    				{
+	    					ind1 = a+1;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			for(b = op_ind+1; b<exp.length(); b++)
+	    			{
+	    				if(exp.charAt(b) == '+' || exp.charAt(b) == '-')
+	    				{
+	    					ind2 = b;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			op1 = exp.substring(ind1, i);
+	    			
+	    			if(ind2 > 0)
+	    				op2 = exp.substring(i+1, ind2);
+	    			else
+	    				op2 = exp.substring(i+1);
+	    			
+	    			double ans = Double.parseDouble(op1) - Double.parseDouble(op2);
+	    			
+	    			System.out.println(exp.substring(ind1, b));
+	    			System.out.println(Double.toString(ans));
+	    			System.out.println(exp);
+	    			
+	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+				}
+			}
+		}
+		
+		return exp;
+    }    
 
 }
