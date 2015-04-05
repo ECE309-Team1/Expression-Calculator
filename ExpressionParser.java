@@ -10,7 +10,7 @@ public class ExpressionParser
         StringBuilder sb = new StringBuilder(exp);
 
                
-        Double r = parse_expression("((3^6^2)^(2/(pi^e)))+x^(x+2)-300r5", "5");
+        Double r = parse_expression("((((3^6^2)+(-8^2)^(2/(pi^e)))+x^(x+2)-300r5", "5");
         System.out.println("ans = " + r);  
 
     }

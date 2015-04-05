@@ -1,6 +1,5 @@
-
-public interface Calculator extends Accumulator{
-	
-	public String calculate(String exp)
-		throws IllegalArgumentException;
+public interface Calculator extends Accumulator
+{
+	public String calculate(String Expression, String x)
+       throws IllegalArgumentException;
 }

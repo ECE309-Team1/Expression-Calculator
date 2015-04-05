@@ -29,6 +29,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 public class ExpressionCalculator implements ActionListener, Calculator {
 
@@ -260,8 +261,10 @@ int totalWrong = 0;
 						input = "0";
 					else
 						input = inputArea.getText();
+					
+					String x = forX.getText();
 							
-					total = calculate(input);
+					total = calculate(input, x);
 					
 					// Update the total after successful parsing
 					totalDisplay.setText(total);
@@ -283,7 +286,7 @@ int totalWrong = 0;
 			
 			else if(testMode.isSelected() == true)
 			{
-				learningMode(inputArea.getText());
+				learningMode(inputArea.getText(), forX.getText());
 			}
 			
 			else if(graphMode.isSelected() == true)
@@ -361,12 +364,22 @@ int totalWrong = 0;
 	}
 
 	@Override
-	public String calculate(String exp)
+	public String calculate(String exp, String x)
 			throws IllegalArgumentException {
 		Double ans = null;
+		
+		//test cases
+		if(exp.contains("X"))
+			exp.replace('X', 'x');
+		if(exp.contains("x"))
+		{
+			if(forX.getText().isEmpty())
+				throw new IllegalArgumentException("Please specify a value for x");
+		}
+		
 		try
 		{
-			ans = parse_expression(exp, forX.getText());
+			ans = parse_expression(exp, x);
 		}
 		catch(Exception e)
 		{
@@ -375,8 +388,8 @@ int totalWrong = 0;
 		return ans.toString();
 	}
 	
-	// Yet to be tested.
-	public void learningMode(String exp)
+	
+	public void learningMode(String exp, String x)
 	{
 		String leftExp = null;
 		String rightExp = null;
@@ -395,8 +408,8 @@ int totalWrong = 0;
 			throw new IllegalArgumentException("Please include an = sign");
 
 		// to be tested once expression parser is working.
-		leftVal = parse_expression(leftExp, forX.getText()); // run leftExp through ExpressionParser(?) and get return value leftVal
-		rightVal = parse_expression(rightExp, forX.getText()); // run rightExp through ExpressionParser(?) and get return value rightVal
+		leftVal = parse_expression(leftExp, x); // run leftExp through ExpressionParser(?) and get return value leftVal
+		rightVal = parse_expression(rightExp, x); // run rightExp through ExpressionParser(?) and get return value rightVal
 		
 		if (leftVal == rightVal)
 		{	
@@ -457,9 +470,18 @@ int totalWrong = 0;
             sb.deleteCharAt(exp.length()-1);
         }
 
+        String acc = "-+*/r^x)( pie.";
         //iterate through rest
         for(int i=1; i<sb.length()-1 ; i++)
         {
+			 //check for invalid vals
+			 char c = sb.charAt(i);
+			 //must be digit or one of these vals.
+			 if(acc.indexOf(c) == -1 && !Character.isDigit(c))
+			 {
+			     throw new IllegalArgumentException("Invalid character detected: " + c);
+			     
+			 }
             if(sb.charAt(i) == ' ')
             {
                 //Don't remove char if surroundings are both digits
@@ -580,7 +602,7 @@ public static String eval_exp(String exp)
 	    			
 	    			double ans = Math.pow(Double.parseDouble(op1), 1/Double.parseDouble(op2));
 	    			
-	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
+	    			exp = exp.replaceFirst(exp.substring(ind1, b), Double.toString(ans));
 	    			i = 0;
 				}
 				 
@@ -711,6 +733,8 @@ public static String eval_exp(String exp)
 	    				op2 = exp.substring(i+1);
 	    			
 	    			double ans = Double.parseDouble(op1) / Double.parseDouble(op2);
+	    			if(Double.isInfinite(ans) || Double.isNaN(ans))
+	    				throw new IllegalArgumentException("Cannot divide by zero");
 	    			
 	    			exp = exp.replace(exp.substring(ind1, b), Double.toString(ans));
 	    			i = 0;
